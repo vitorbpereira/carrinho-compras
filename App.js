@@ -68,11 +68,12 @@ function ListaProdutos({ produtos, adicionarAoCarrinho, termoPesquisa }) {
 }
 
 // Componente para o carrinho de compras
+// Componente que exibe o carrinho de compras
 function Carrinho({ itensCarrinho, setItensCarrinho }) {
   const [quantidadesParaEditar, setQuantidadesParaEditar] = useState({});
   const [itemEmEdicao, setItemEmEdicao] = useState(null);
 
-  // Atualiza a quantidade de um item no carrinho
+  // Atualiza a quantidade de um item específico
   const handleQuantidadeChange = (index, value) => {
     setQuantidadesParaEditar({
       ...quantidadesParaEditar,
@@ -80,28 +81,42 @@ function Carrinho({ itensCarrinho, setItensCarrinho }) {
     });
   };
 
-  // Edita a quantidade de um item
+  // Coloca um item em modo de edição
   const handleEditar = (index) => {
     setItemEmEdicao(index);
+    // Inicializa a quantidade para edição com a quantidade atual
+    handleQuantidadeChange(index, itensCarrinho[index].quantidade);
   };
 
-  // Salva as alterações no item
+  // Salva as alterações feitas na quantidade
   const handleSalvar = (index) => {
     const quantidade = quantidadesParaEditar[index] || 1;
     const item = itensCarrinho[index];
 
-    // Remove item se a quantidade for zero
     if (quantidade === 0) {
       const novoCarrinho = itensCarrinho.filter((_, i) => i !== index);
-      setItensCarrinho(novoCarrinho);
+      setItensCarrinho(novoCarrinho); // Remove o item se a quantidade for zero
     } else {
       if (item) {
-        item.quantidade = quantidade; // Atualiza a quantidade
+        item.quantidade = quantidade; // Atualiza a quantidade do item
       }
     }
 
-    setItemEmEdicao(null);
-    setQuantidadesParaEditar({ ...quantidadesParaEditar, [index]: 1 });
+    setItemEmEdicao(null); // Sai do modo de edição
+    setQuantidadesParaEditar({ ...quantidadesParaEditar, [index]: quantidade }); // Mantém a quantidade ao sair da edição
+  };
+
+  // Aumenta a quantidade de um item
+  const handleIncrementar = (index) => {
+    handleQuantidadeChange(index, (quantidadesParaEditar[index] || itensCarrinho[index].quantidade) + 1);
+  };
+
+  // Diminui a quantidade de um item
+  const handleDecrementar = (index) => {
+    const quantidadeAtual = quantidadesParaEditar[index] || itensCarrinho[index].quantidade;
+    if (quantidadeAtual > 1) {
+      handleQuantidadeChange(index, quantidadeAtual - 1);
+    }
   };
 
   // Remove um item do carrinho
@@ -120,14 +135,16 @@ function Carrinho({ itensCarrinho, setItensCarrinho }) {
         {itensCarrinho.map((item, index) => (
           <li key={index}>
             {item.nome} - {formatarPreco(item.preco)} (Quantidade: {item.quantidade})  
+            <button onClick={() => handleDecrementar(index)} disabled={itemEmEdicao !== index}>-</button>
             <input
               type="number"
-              min="0"
+              min="1"
               value={itemEmEdicao === index ? (quantidadesParaEditar[index] || item.quantidade) : item.quantidade}
               onChange={(e) => handleQuantidadeChange(index, Number(e.target.value))}
               style={{ width: '60px', marginLeft: '10px', marginRight: '10px' }}
-              disabled={itemEmEdicao !== index}
+              disabled={itemEmEdicao !== index} // Desabilita se não estiver em edição
             />
+            <button onClick={() => handleIncrementar(index)} disabled={itemEmEdicao !== index}>+</button>
             {itemEmEdicao === index ? (
               <button onClick={() => handleSalvar(index)} className="remove-btn">Salvar</button>
             ) : (
@@ -138,6 +155,24 @@ function Carrinho({ itensCarrinho, setItensCarrinho }) {
         ))}
       </ul>
       <h3>Total: {formatarPreco(total)}</h3> 
+    </div>
+  );
+}
+
+// Componente que exibe o recibo após a compra
+function Recibo({ itensCarrinho, total, onVoltar }) {
+  return (
+    <div style={{ padding: '20px', backgroundColor: '#f7f9fc' }}> 
+      <h2>Recibo</h2>
+      <ul>
+        {itensCarrinho.map((item, index) => (
+          <li key={index}> 
+            {item.nome} - {formatarPreco(item.preco)} (Quantidade: {item.quantidade}) - Total: {formatarPreco(item.preco * item.quantidade)}  
+          </li>
+        ))}
+      </ul>
+      <h3>Total da Compra: {formatarPreco(total)}</h3> 
+      <button onClick={onVoltar} className="voltar-btn">Voltar</button>  
     </div>
   );
 }
