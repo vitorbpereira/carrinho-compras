@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import ReactDOM from "https://esm.sh/react-dom";
-import './App.css';
+import ReactDOM from "https://esm.sh/react-dom"; // Importa React e ReactDOM
+import './App.css'; // Importa o CSS para estilização   -  comentar ao rodar no codepen.io
 
+// Dados de produtos disponíveis
 const dadosProdutos = [
   { id: 1, nome: "Maçã", preco: 1.5, imagem: "https://i.pinimg.com/originals/84/cc/dc/84ccdcf14badb1fe1030ef3e421dc374.png" },
   { id: 2, nome: "Banana", preco: 1.0, imagem: "https://i.pinimg.com/736x/38/1f/ae/381fae890b6d2e3aef851949e261a13a.jpg" },
@@ -9,19 +10,22 @@ const dadosProdutos = [
   { id: 4, nome: "Leite", preco: 3.0, imagem: "https://png.pngtree.com/png-vector/20240205/ourmid/pngtree-milk-bottle-dairy-product-png-image_11543900.png" },
   { id: 5, nome: "Pão", preco: 2.5, imagem: "https://i.pinimg.com/originals/b8/bd/dd/b8bdddabafd4892124d854dfecdb4a63.jpg" },
   { id: 6, nome: "Kiwi", preco: 3.00, imagem: "https://i.pinimg.com/736x/58/14/52/581452ef10a7cb0a8d0223e489bb5113.jpg" }
-];
 
+// Formata o preço para o padrão monetário
 function formatarPreco(preco) {
   return `R$ ${preco.toFixed(2)}`;
 }
 
+// Componente para listar produtos
 function ListaProdutos({ produtos, adicionarAoCarrinho, termoPesquisa }) {
-  const [quantidades, setQuantidades] = useState({});
+  const [quantidades, setQuantidades] = useState({}); // Estado para armazenar quantidades selecionadas
 
+  // Filtra produtos com base no termo de pesquisa
   const produtosFiltrados = produtos.filter(produto =>
     produto.nome.toLowerCase().includes(termoPesquisa.toLowerCase())
   );
 
+  // Atualiza a quantidade de um produto
   const handleQuantidadeChange = (id, value) => {
     setQuantidades({
       ...quantidades,
@@ -29,10 +33,11 @@ function ListaProdutos({ produtos, adicionarAoCarrinho, termoPesquisa }) {
     });
   };
 
+  // Adiciona um produto ao carrinho
   const handleAdicionarAoCarrinho = (produto) => {
-    const quantidade = quantidades[produto.id] || 1;
+    const quantidade = quantidades[produto.id] || 1; // Usa a quantidade escolhida ou 1
     adicionarAoCarrinho(produto, quantidade);
-    handleQuantidadeChange(produto.id, 1);
+    handleQuantidadeChange(produto.id, 1); // Reseta a quantidade após adicionar
   };
 
   return (
@@ -62,10 +67,12 @@ function ListaProdutos({ produtos, adicionarAoCarrinho, termoPesquisa }) {
   );  
 }
 
+// Componente para o carrinho de compras
 function Carrinho({ itensCarrinho, setItensCarrinho }) {
   const [quantidadesParaEditar, setQuantidadesParaEditar] = useState({});
   const [itemEmEdicao, setItemEmEdicao] = useState(null);
 
+  // Atualiza a quantidade de um item no carrinho
   const handleQuantidadeChange = (index, value) => {
     setQuantidadesParaEditar({
       ...quantidadesParaEditar,
@@ -73,20 +80,23 @@ function Carrinho({ itensCarrinho, setItensCarrinho }) {
     });
   };
 
+  // Edita a quantidade de um item
   const handleEditar = (index) => {
     setItemEmEdicao(index);
   };
 
+  // Salva as alterações no item
   const handleSalvar = (index) => {
     const quantidade = quantidadesParaEditar[index] || 1;
     const item = itensCarrinho[index];
 
+    // Remove item se a quantidade for zero
     if (quantidade === 0) {
       const novoCarrinho = itensCarrinho.filter((_, i) => i !== index);
       setItensCarrinho(novoCarrinho);
     } else {
       if (item) {
-        item.quantidade = quantidade;
+        item.quantidade = quantidade; // Atualiza a quantidade
       }
     }
 
@@ -94,11 +104,13 @@ function Carrinho({ itensCarrinho, setItensCarrinho }) {
     setQuantidadesParaEditar({ ...quantidadesParaEditar, [index]: 1 });
   };
 
+  // Remove um item do carrinho
   const handleRemover = (index) => {
     const novoCarrinho = itensCarrinho.filter((_, i) => i !== index);
     setItensCarrinho(novoCarrinho);
   };
 
+  // Calcula o total do carrinho
   const total = itensCarrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
 
   return (
@@ -130,6 +142,7 @@ function Carrinho({ itensCarrinho, setItensCarrinho }) {
   );
 }
 
+// Componente para exibir o recibo após a finalização da compra
 function Recibo({ itensCarrinho, total, onVoltar }) {
   return (
     <div style={{ padding: '20px', backgroundColor: '#f7f9fc' }}> 
@@ -147,48 +160,54 @@ function Recibo({ itensCarrinho, total, onVoltar }) {
   );
 }
 
+// Componente principal da aplicação
 function App() {
-  const [itensCarrinho, setItensCarrinho] = useState([]);
-  const [termoPesquisa, setTermoPesquisa] = useState("");
-  const [finalizarCompra, setFinalizarCompra] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [usuario, setUsuario] = useState("");
-  const [senha, setSenha] = useState("");
-  const [mensagemErro, setMensagemErro] = useState("");
-  const [showAddProdutoModal, setShowAddProdutoModal] = useState(false);
-  const [novoProduto, setNovoProduto] = useState({ id: '', nome: '', preco: '', imagem: '' });
+  const [itensCarrinho, setItensCarrinho] = useState([]); // Estado para armazenar itens do carrinho
+  const [termoPesquisa, setTermoPesquisa] = useState(""); // Termo de pesquisa para produtos
+  const [finalizarCompra, setFinalizarCompra] = useState(false); // Controle de finalização da compra
+  const [showModal, setShowModal] = useState(false); // Controle do modal de acesso administrativo
+  const [usuario, setUsuario] = useState(""); // Estado para armazenar usuário
+  const [senha, setSenha] = useState(""); // Estado para armazenar senha
+  const [mensagemErro, setMensagemErro] = useState(""); // Mensagem de erro de acesso
+  const [showAddProdutoModal, setShowAddProdutoModal] = useState(false); // Controle do modal para adicionar produtos
+  const [novoProduto, setNovoProduto] = useState({ id: '', nome: '', preco: '', imagem: '' }); // Estado para novo produto
 
+  // Função para adicionar produto ao carrinho
   const adicionarAoCarrinho = (produto, quantidade) => {
     const produtoExistente = itensCarrinho.find(item => item.id === produto.id);
 
     if (produtoExistente) {
-      produtoExistente.quantidade += quantidade;
+      produtoExistente.quantidade += quantidade; // Atualiza quantidade se já existir
       setItensCarrinho([...itensCarrinho]);
     } else {
-      setItensCarrinho([...itensCarrinho, { ...produto, quantidade }]);
+      setItensCarrinho([...itensCarrinho, { ...produto, quantidade }]); // Adiciona novo produto ao carrinho
     }
   };
 
+  // Função para finalizar a compra
   const handleFinalizarCompra = () => {
     setFinalizarCompra(true);
   };
 
+  // Função para voltar à tela inicial
   const handleVoltar = () => {
     setItensCarrinho([]);
     setFinalizarCompra(false);
     setTermoPesquisa("");
   };
 
+  // Função para acesso administrativo
   const handleAcessoAdministrativo = () => {
     if (usuario === "admin" && senha === "admin") {
       setShowModal(false);
       setMensagemErro("");
-      setShowAddProdutoModal(true); // Abre o modal para adicionar produtos
+      setShowAddProdutoModal(true); // Abre modal para adicionar produtos
     } else {
       setMensagemErro("Acesso não autorizado");
     }
   };
 
+  // Função para salvar novo produto
   const handleSalvarProduto = () => {
     const produtoExistente = dadosProdutos.find(prod => prod.id === novoProduto.id);
     if (produtoExistente) {
@@ -203,11 +222,12 @@ function App() {
       imagem: novoProduto.imagem
     });
 
-    // Resetar campos e fechar modal
+    // Reseta campos e fecha modal
     setNovoProduto({ id: '', nome: '', preco: '', imagem: '' });
     setShowAddProdutoModal(false);
   };
 
+  // Calcula o total do carrinho
   const total = itensCarrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
 
   return (
@@ -348,7 +368,5 @@ function App() {
     </div>
   );
 }
-
-
 //ReactDOM.render(<App />, document.getElementById("root")); necessario utilizar para rodar no Codepen.io
 export default App; // Exporta o componente App para uso em outros lugares 
