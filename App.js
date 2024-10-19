@@ -10,7 +10,7 @@ const dadosProdutos = [
   { id: 4, nome: "Leite", preco: 3.0, imagem: "https://png.pngtree.com/png-vector/20240205/ourmid/pngtree-milk-bottle-dairy-product-png-image_11543900.png" },
   { id: 5, nome: "Pão", preco: 2.5, imagem: "https://i.pinimg.com/originals/b8/bd/dd/b8bdddabafd4892124d854dfecdb4a63.jpg" },
   { id: 6, nome: "Kiwi", preco: 3.00, imagem: "https://i.pinimg.com/736x/58/14/52/581452ef10a7cb0a8d0223e489bb5113.jpg" }
-
+];
 // Formata o preço para o padrão monetário
 function formatarPreco(preco) {
   return `R$ ${preco.toFixed(2)}`;
