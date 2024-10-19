@@ -68,7 +68,6 @@ function ListaProdutos({ produtos, adicionarAoCarrinho, termoPesquisa }) {
 }
 
 // Componente para o carrinho de compras
-// Componente que exibe o carrinho de compras
 function Carrinho({ itensCarrinho, setItensCarrinho }) {
   const [quantidadesParaEditar, setQuantidadesParaEditar] = useState({});
   const [itemEmEdicao, setItemEmEdicao] = useState(null);
