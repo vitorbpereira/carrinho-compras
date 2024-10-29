@@ -59,3 +59,18 @@ React App instalado, você pode instalar globalmente usando npm:</li>
 </ol>
 
 
+----------------------------
+
+<p>Há quatro arquivos:</p>
+
+<p>index.js, index.html, App.css e App.js</p>
+
+<p>-index.js</p>
+<p>   > usamos esse arquivo para o programa rodar via VSCode, e uma aplicação React. Ele configura a renderização do componente principal (App) dentro do elemento com o ID root no HTML permitindo que você dividindo o código em componentes reutilizáveis e mantenha uma estrutura de projeto modular.</p>
+<p>-index.html</p>
+<p>   > usams esse arquivo para o programa rodar via Codepen.io,  um contêiner onde uma aplicação JavaScript, criada com React ou outra biblioteca de frontend, será renderizada. Esse é o ponto de entrada padrão onde a aplicação insere seu conteúdo na página.</p>
+<p>-App.css</p>
+<p>   > esse arquivo é de layout , aplicação responsiva, destacando listas e botões.</p>
+<p>-App.js</p>
+<p>   >  componente principal de uma aplicação React para um sistema de carrinho de compras, implementando funcionalidades para gerenciar produtos, adicionar itens ao carrinho, e realizar operações administrativas básicas, como adicionar novos produtos. </p>
+
